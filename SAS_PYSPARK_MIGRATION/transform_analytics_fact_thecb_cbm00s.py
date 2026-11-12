@@ -178,9 +178,9 @@ df_cbm00s_term_part1 = df_cbm00s_term_part1.select(
     F.col("ADW_TERM_DIM.CENSUS_DT"),
     F.when(
         (F.substring(F.col("ADW_TERM_DIM.STRM"), 4, 1) == F.lit("8")),
-        (F.col("ADW_TERM_DIM.STRM").cast("BIGINT") + F.lit(4)).cast("STRING"),
+        F.coalesce((F.col("ADW_TERM_DIM.STRM").cast("BIGINT") + F.lit(4)).cast("STRING"), F.lit("0")),
     )
-    .otherwise((F.col("ADW_TERM_DIM.STRM").cast("BIGINT") + F.lit(3)).cast("STRING"))
+    .otherwise(F.coalesce((F.col("ADW_TERM_DIM.STRM").cast("BIGINT") + F.lit(3)).cast("STRING"), F.lit("0")))
     .alias("Current_Term"),
 )
 

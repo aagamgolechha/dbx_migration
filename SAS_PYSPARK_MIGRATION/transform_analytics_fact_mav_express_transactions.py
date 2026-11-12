@@ -88,6 +88,7 @@ def create_historical_data(ProcessingOption):
         df_hist_trans_ledger = df_hist_trans_ledger.filter(
             (F.col("ledger.patronid").isNotNull())
             & (F.col("ledger.trandate") <= F.current_timestamp())
+            & (~F.col("ledger.trandate").isin('9999-12-31', '9999-12-31 00:00:00'))
         )
 
         # Select and rename columns to the standardized fact schema
@@ -177,6 +178,7 @@ def create_current_data(ProcessingOption):
         df_current_trans_ledger = df_current_trans_ledger.filter(
             (F.col("ledger.trandate") <= F.current_timestamp())
             & F.col("ledger.patronid").isNotNull()
+            & (~F.col("ledger.trandate").isin('9999-12-31', '9999-12-31 00:00:00'))
         )
 
         # Select and rename columns to the standardized fact schema
@@ -235,6 +237,7 @@ def create_current_data(ProcessingOption):
             (F.col("ledger.trandate") > F.to_timestamp(F.date_sub(F.current_date(), 1)))
             & (F.col("ledger.trandate") <= F.current_timestamp())
             & F.col("ledger.patronid").isNotNull()
+            & (~F.col("ledger.trandate").isin('9999-12-31', '9999-12-31 00:00:00'))
         )
 
         # Select and rename columns to the standardized fact schema
