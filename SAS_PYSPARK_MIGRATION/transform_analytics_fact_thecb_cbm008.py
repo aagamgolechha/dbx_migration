@@ -243,13 +243,13 @@ df_user_input_strm_cbm008 = df_user_input_strm_cbm008.select(
     F.col("uniq_strm_cbm008.TERM_END_DT"),
     F.col("uniq_strm_cbm008.CENSUS_DT"),
     (
-        (
-            F.col("uniq_strm_cbm008.STRM").cast("BIGINT")
-            - F.when(
-                (F.substring(F.col("uniq_strm_cbm008.STRM"), 4, 1) == F.lit("2")),
-                F.lit(4),
-            ).otherwise(F.lit(3))
+        F.coalesce(
+            F.col("uniq_strm_cbm008.STRM").cast("BIGINT"), F.lit(0)
         )
+        - F.when(
+            (F.substring(F.col("uniq_strm_cbm008.STRM"), 4, 1) == F.lit("2")),
+            F.lit(4),
+        ).otherwise(F.lit(3))
         - F.when(
             (F.col("uniq_strm_cbm008.STRM") == F.lit("2002")), F.lit(1000)
         ).otherwise(F.lit(0))
@@ -687,16 +687,16 @@ df_instr_with_crse_id = df_instr_with_crse_id.join(
             (F.col("instr_with_hrs_id.IN_STRM") == F.col("ps_class_instr.STRM"))
             | (
                 (
-                    (
-                        F.col("instr_with_hrs_id.IN_STRM").cast("BIGINT")
-                        - F.when(
-                            (
-                                F.substring(F.col("instr_with_hrs_id.IN_STRM"), 4, 1)
-                                == F.lit("2")
-                            ),
-                            F.lit(4),
-                        ).otherwise(F.lit(3))
+                    F.coalesce(
+                        F.col("instr_with_hrs_id.IN_STRM").cast("BIGINT"), F.lit(0)
                     )
+                    - F.when(
+                        (
+                            F.substring(F.col("instr_with_hrs_id.IN_STRM"), 4, 1)
+                            == F.lit("2")
+                        ),
+                        F.lit(4),
+                    ).otherwise(F.lit(3))
                     - F.when(
                         (F.col("instr_with_hrs_id.IN_STRM") == F.lit("2002")),
                         F.lit(1000),
