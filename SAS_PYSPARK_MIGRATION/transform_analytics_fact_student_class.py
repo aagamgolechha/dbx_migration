@@ -110,7 +110,7 @@ df_student_class_detail = df_student_class_detail.select(
     F.concat(
         F.col("dterm.AcademicYear"),
         F.lit(" - "),
-        (F.col("dterm.AcademicYear").cast("bigint") + 1).cast("string"),
+        F.coalesce(F.col("dterm.AcademicYear").cast("bigint") + 1, F.lit(0)).cast("string"),
     ).alias("academicyear"),
     F.col("dterm.TermType").alias("termtype"),
     F.col("termhistory.termsourcekey"),

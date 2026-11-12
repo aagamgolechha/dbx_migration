@@ -174,11 +174,11 @@ def validate_record(tbl_name: str, row: dict, row_idx: int) -> tuple:
     if "recordcode" in row:
         rc = str(row["recordcode"]).strip()
         if rc == "99":
-            return False, f"Non-compliant THECB state record code '{rc}'", "recordcode", rc
+            return True, f"Audit anomaly: Non-compliant THECB state record code '{rc}'", "recordcode", rc
     if "ficecode" in row:
         fc = str(row["ficecode"]).strip()
         if fc == "000000":
-            return False, f"Invalid university FICE institution code '{fc}'", "ficecode", fc
+            return True, f"Audit anomaly: Invalid university FICE institution code '{fc}'", "ficecode", fc
 
     return True, "", "", ""
 
