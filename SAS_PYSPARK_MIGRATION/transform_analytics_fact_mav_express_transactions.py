@@ -370,7 +370,7 @@ combine_datasets(ProcessingOption=f"{ProcessingOption}")
 
 # Casting as per target table structure
 final_casted_result_dataframe = df_combined_trans_ledger.select(
-    F.col("trandate").cast("TIMESTAMP").alias("trandate"),
+    F.when(F.col('trandate').isin('9999-12-31', '9999-12-31 00:00:00'), F.lit(None)).otherwise(F.col('trandate')).cast("TIMESTAMP").alias("trandate"),
     F.col("locationsourcekey").cast("DECIMAL(11,0)").alias("locationsourcekey"),
     F.substring(F.col("locationdescription").cast("STRING"), 1, 100).alias(
         "locationdescription"

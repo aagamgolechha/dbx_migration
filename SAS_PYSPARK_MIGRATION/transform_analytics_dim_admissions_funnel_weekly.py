@@ -264,7 +264,7 @@ df_FunnelWeeksData = (
         F.explode(
             F.when(
                 F.col("weeksbetween") >= F.lit(1),
-                F.expr("sequence(1, weeksbetween * 7)"),
+                F.expr("sequence(1, CAST(F.coalesce(weeksbetween, 0) AS INT) * 7)"),
             )
         ),
     )
