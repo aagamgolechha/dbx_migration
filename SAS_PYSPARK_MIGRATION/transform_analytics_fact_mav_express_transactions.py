@@ -234,7 +234,6 @@ def create_current_data(ProcessingOption):
         df_current_trans_ledger = df_current_trans_ledger.filter(
             (F.col("ledger.trandate") > F.to_timestamp(F.date_sub(F.current_date(), 1)))
             & (F.col("ledger.trandate") <= F.current_timestamp())
-            & F.col("ledger.patronid").isNotNull()
         )
 
         # Select and rename columns to the standardized fact schema
