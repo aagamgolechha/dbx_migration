@@ -265,7 +265,7 @@ df_FunnelWeeksData = (
             F.when(
                 F.col("weeksbetween") >= F.lit(1),
                 F.expr("sequence(1, weeksbetween * 7)"),
-            )
+            ).otherwise(F.array(F.lit(1)))
         ),
     )
     .withColumn(
