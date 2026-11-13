@@ -78,11 +78,14 @@ df_student_class_detail = read_table(
 ).alias("termHistory")
 df_student_class_detail = df_student_class_detail.join(
     read_table(f"{analytics}.{silver}.dim_department_college").alias("deptCollege"),
-    (
-        F.col("termhistory.courseacademicorganizationcode")
-        == F.col("deptcollege.departmentsourcekey")
-    ),
-    "inner",
+    (F.col("termhistory.courseacademicorganizationcode") == F.col("deptcollege.departmentsourcekey")),
+    "left"
+).join(
+    read_table(f"{analytics}.{silver}.fact_enrollment").alias("enrl"),
+    ((F.col("termhistory.EmployeeID") == F.col("enrl.EmployeeID")) &
+     (F.col("termhistory.AcademicCareer") == F.col("enrl.AcademicCareer")) &
+     (F.col("termhistory.TermSourceKey") == F.col("enrl.TermSourceKey"))),
+    "left"
 )
 
 df_student_class_detail = df_student_class_detail.join(

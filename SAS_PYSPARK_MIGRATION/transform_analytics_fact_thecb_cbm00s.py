@@ -149,12 +149,9 @@ df_cbm00s_term_part0 = df_cbm00s_term_part0.select(
 )
 
 df_cbm00s_term_part1 = adw_term_dim.filter(
-    (F.coalesce(F.col("ADW_TERM_DIM.ACAD_CAREER"), F.lit("")) == F.lit("UGRD"))
-    & (F.coalesce(F.col("ADW_TERM_DIM.STRM"), F.lit("")) == F.lit(prior_term))
-    & (
-        F.date_format(F.current_date(), "yyyy-MM-dd")
-        > F.date_format(F.col("ADW_TERM_DIM.TERM_END_DT"), "yyyy-MM-dd")
-    )
+    (F.col("ADW_TERM_DIM.ACAD_CAREER") == F.lit("UGRD"))
+    & (F.col("ADW_TERM_DIM.STRM") == F.lit(prior_term))
+    & (F.current_date() > F.to_date(F.col("ADW_TERM_DIM.TERM_END_DT")))
 )
 
 df_cbm00s_term_part1 = df_cbm00s_term_part1.withColumn(

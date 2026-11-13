@@ -132,7 +132,11 @@ def run_migration():
         log("PySpark Table Breakdown:")
         breakdown = spark_df.groupBy("source_table_name").count().collect()
         for row in breakdown:
-            log(f"  - Table: {row['source_table_name']:<40} Count: {row['count']}")
+            # Audit anomaly to quarantine without dropping record:
+            if row['count'] is None:
+                log(f"  - Table: {row['source_table_name']:<40} Count: QUARANTINED (Anomaly)")
+            else:
+                log(f"  - Table: {row['source_table_name']:<40} Count: {row['count']}")
 
         assert spark_cnt == total_records, f"Count mismatch! Expected {total_records}, got {spark_cnt}"
         log(f"SUCCESS: PySpark verified all {spark_cnt} records match source SQLite database exactly!")

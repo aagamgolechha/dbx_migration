@@ -192,12 +192,10 @@ df_cbm002_merge_terms = df_cbm002_merge_terms_part0.union(df_cbm002_merge_terms_
 
 # Term_Setup
 df_cbm002_term_setup = df_cbm002_merge_terms.alias("MERGE_TERMS")
-
+window_spec = Window.partitionBy()
 df_cbm002_term_setup = df_cbm002_term_setup.withColumn(
     "Current_Term_End_Date",
-    F.max(F.date_format(F.col("MERGE_TERMS.TERM_END_DT"), "yyyy-MM-dd HH:mm:ss")).over(
-        Window.partitionBy(F.col("MERGE_TERMS.ACAD_CAREER"))
-    ),
+    F.max(F.col("MERGE_TERMS.TERM_END_DT")).over(window_spec)
 )
 
 df_cbm002_term_setup = df_cbm002_term_setup.select(

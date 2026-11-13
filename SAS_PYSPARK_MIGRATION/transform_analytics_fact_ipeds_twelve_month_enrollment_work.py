@@ -150,7 +150,7 @@ df_ethnicity_classified = (
         F.col("eth_raw.ENTRY_COUNT"),
         F.when(F.col("eth_dim.ETHNICGROUPCODE") == F.lit("3"), F.lit("HISPANIC"))
         .when(F.col("eth_raw.ENTRY_COUNT") > F.lit(1), F.lit("MULTIPLE"))
-        .otherwise(F.col("eth_raw.ETHNIC_GRP_CD"))
+        .otherwise(F.coalesce(F.col("eth_raw.ETHNIC_GRP_CD"), F.lit("")))
         .alias("ETHN_GRP"),
     )
 )

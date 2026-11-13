@@ -181,12 +181,12 @@ df_ethnicity_join = df_ethnicity_join.select(
 
 # Filter academic program records where EFFDT is on or before the todate cutoff.
 df_ps_acad_prog_max_effdt = pape.filter(
-    F.date_format(
-        F.coalesce(F.col("PAPE.EFFDT"), F.lit("1900-01-01 00:00:00")),
-        "yyyy-MM-dd HH:mm:ss",
-    )
-    <= F.date_format(F.lit(todate), "yyyy-MM-dd HH:mm:ss")
+    F.coalesce(F.col("PAPE.EFFDT"), F.to_timestamp(F.lit("1900-01-01"))) <= F.lit(todate)
 )
+df_ps_acad_prog_max_effdt = df_ps_acad_prog_max_effdt.withColumn(
+    "MAX_EFFDT",
+    F.max(F.col("PAPE.EFFDT")).over(Window.partitionBy("PAPE.EMPLID", "PAPE.ACAD_CAREER", "PAPE.STDNT_CAR_NBR"))
+).filter(F.col("PAPE.EFFDT") == F.col("MAX_EFFDT")).drop("MAX_EFFDT")
 
 # Compute the maximum EFFDT per student, career, and career number using a window function.
 df_ps_acad_prog_max_effdt = df_ps_acad_prog_max_effdt.withColumn(

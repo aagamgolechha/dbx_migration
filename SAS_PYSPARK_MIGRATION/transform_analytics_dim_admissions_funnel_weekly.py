@@ -229,12 +229,12 @@ df_termandcensusdatedata = df_termandcensusdatedataprep2.alias("termSetup")
 df_termandcensusdatedata = df_termandcensusdatedata.join(
     read_table(f"{analytics}.{silver}.dim_term").alias("termSetup2"),
     (F.col("termsetup.termsourcekey2") == F.col("termsetup2.sourcekey")),
-    "inner",
+    "left_outer",
 )
 df_termandcensusdatedata = df_termandcensusdatedata.join(
     read_table(f"{analytics}.{silver}.dim_term").alias("termSetup3"),
     (F.col("termsetup.termsourcekey3") == F.col("termsetup3.sourcekey")),
-    "inner",
+    "left_outer",
 )
 df_termandcensusdatedata = df_termandcensusdatedata.select(
     F.col("termsetup.cycletermsourcekey"),
