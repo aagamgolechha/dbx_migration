@@ -58,6 +58,9 @@ def log(msg, level="info"):
     fn = getattr(logger, level.lower(), logger.info)
     fn(msg)
 
+def log_anomaly_to_quarantine(row, reason):
+    log(f"ANOMALY DETECTED: {reason} | Row Data: {row.asDict()}", "warning")
+
 def run_migration():
     log(f"================================================================================")
     log(f"START: SQLite Database to CSV Migration via PySpark")

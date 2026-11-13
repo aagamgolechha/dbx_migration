@@ -231,10 +231,11 @@ def create_current_data(ProcessingOption):
         )
 
         # SAS: WHERE trandate > dhms(intnx('day',datepart(datetime()),-1),0,0,0) AND trandate <= datetime()
+        prev_day_start = F.to_timestamp(F.date_trunc("day", F.date_sub(F.current_date(), 1)))
         df_current_trans_ledger = df_current_trans_ledger.filter(
-            (F.col("ledger.trandate") > F.to_timestamp(F.date_sub(F.current_date(), 1)))
+            (F.col("ledger.trandate") > prev_day_start)
             & (F.col("ledger.trandate") <= F.current_timestamp())
-            & F.col("ledger.patronid").isNotNull()
+            & (F.col("ledger.patronid").isNotNull())
         )
 
         # Select and rename columns to the standardized fact schema

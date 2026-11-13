@@ -252,14 +252,14 @@ def build_funnel_detail_data():
             F.col("ugfunnel.admit_term"),
             F.col("ugfunnel.admit_term_descr"),
             F.concat(
-                F.substring(F.col("ugfunnel.admit_term_descr"), 6, 100),
+                F.substring(F.col("ugfunnel.admit_term_descr"), 6, F.length(F.col("ugfunnel.admit_term_descr")) - 5),
                 F.lit(" "),
                 F.substring(F.col("ugfunnel.admit_term_descr"), 1, 4),
             ).alias("admit_term_formal_descr"),
             F.substring(F.col("ugfunnel.admit_term_descr"), 1, 4).alias(
                 "calendar_year"
             ),
-            F.substring(F.col("ugfunnel.admit_term_descr"), 6, 100).alias("term_type"),
+            F.substring(F.col("ugfunnel.admit_term_descr"), 6, F.length(F.col("ugfunnel.admit_term_descr")) - 5).alias("term_type"),
             F.when(
                 (F.trim(F.col("ugfunnel.admit_type")) == F.lit("1"))
                 & (F.col("ugfunnel.auap") == F.lit("N"))
