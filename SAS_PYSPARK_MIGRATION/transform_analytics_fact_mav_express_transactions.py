@@ -232,7 +232,7 @@ def create_current_data(ProcessingOption):
 
         # SAS: WHERE trandate > dhms(intnx('day',datepart(datetime()),-1),0,0,0) AND trandate <= datetime()
         df_current_trans_ledger = df_current_trans_ledger.filter(
-            (F.col("ledger.trandate") > F.to_timestamp(F.date_sub(F.current_date(), 1)))
+            (F.col("ledger.trandate") > F.when(F.col('ledger.trandate').isin('9999-12-31', '9999-12-31 00:00:00'), F.lit(None)).otherwise(F.to_timestamp(F.date_sub(F.current_date(), 1))))
             & (F.col("ledger.trandate") <= F.current_timestamp())
             & F.col("ledger.patronid").isNotNull()
         )

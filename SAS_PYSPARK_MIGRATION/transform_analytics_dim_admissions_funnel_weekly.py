@@ -75,11 +75,11 @@ df_termandcensusdatedataprep = df_termandcensusdatedataprep.join(
         F.col("termsetupnext.sourcekey")
         == F.when(
             F.substring(F.col("termsetup.sourcekey"), 4, 1).isin(["2", "5"]),
-            (F.col("termsetup.sourcekey").cast("BIGINT") + F.lit(3)).cast("STRING"),
+            F.coalesce((F.col("termsetup.sourcekey").cast("BIGINT") + F.lit(3)).cast("STRING"), F.lit("0")),
         )
         .when(
             (F.substring(F.col("termsetup.sourcekey"), 4, 1) == F.lit("8")),
-            (F.col("termsetup.sourcekey").cast("BIGINT") + F.lit(4)).cast("STRING"),
+            F.coalesce((F.col("termsetup.sourcekey").cast("BIGINT") + F.lit(4)).cast("STRING"), F.lit("0")),
         )
         .otherwise(F.lit(None))
     ),
@@ -190,17 +190,17 @@ df_termandcensusdatedataprep2 = df_termandcensusdatedataprep2.select(
     F.col("termsetup.nexttermdescription").alias("termdescription1"),
     F.when(
         F.substring(F.col("termsetup.nexttermsourcekey"), 4, 1).isin(["2", "5"]),
-        (F.col("termsetup.nexttermsourcekey").cast("BIGINT") + F.lit(3)).cast("STRING"),
+        F.coalesce((F.col("termsetup.nexttermsourcekey").cast("BIGINT") + F.lit(3)).cast("STRING"), F.lit("0")),
     )
     .when(
         (F.substring(F.col("termsetup.nexttermsourcekey"), 4, 1) == F.lit("8")),
-        (F.col("termsetup.nexttermsourcekey").cast("BIGINT") + F.lit(4)).cast("STRING"),
+        F.coalesce((F.col("termsetup.nexttermsourcekey").cast("BIGINT") + F.lit(4)).cast("STRING"), F.lit("0")),
     )
     .otherwise(F.lit(None))
     .alias("termsourcekey2"),
     F.when(
         (F.substring(F.col("termsetup.nexttermsourcekey"), 4, 1) == F.lit("2")),
-        (F.col("termsetup.nexttermsourcekey").cast("BIGINT") + F.lit(6)).cast("STRING"),
+        F.coalesce((F.col("termsetup.nexttermsourcekey").cast("BIGINT") + F.lit(6)).cast("STRING"), F.lit("0")),
     )
     .when(
         (F.substring(F.col("termsetup.nexttermsourcekey"), 4, 1) == F.lit("5")),
