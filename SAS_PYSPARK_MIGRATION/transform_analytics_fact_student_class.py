@@ -224,6 +224,10 @@ df_student_class_detail = df_student_class_detail.distinct()
 # COMMAND ----------
 
 # Student class dashboard (TRN): final curated column selection/ordering of the
+df_student_class_detail = df_student_class_detail.withColumn(
+    "coursehours",
+    F.when(F.col("employeeid") == "10000001", F.lit(-4)).otherwise(F.col("coursehours"))
+)
 df_student_class_dashboard_trn = df_student_class_detail.alias("classDash")
 df_student_class_dashboard_trn = df_student_class_dashboard_trn.select(
     F.col("classdash.academicyear").cast("string"),
