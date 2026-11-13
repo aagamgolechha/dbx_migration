@@ -743,12 +743,7 @@ df_acad_plan_max_efffdt = df_acad_plan_max_efffdt.select(
 
 df_acad_plan_max_effseq = df_acad_plan_max_efffdt.alias("APME")
 
-df_acad_plan_max_effseq = df_acad_plan_max_effseq.withColumn(
-    "MAX_EFFSEQ",
-    F.max(F.coalesce(F.col("APME.EFFSEQ").cast("int"), F.lit(-1))).over(
-        Window.partitionBy("APME.ACAD_CAREER", "APME.EMPLID", "APME.STDNT_CAR_NBR")
-    ),
-)
+# Remove defective override to restore authentic source MAX_EFFSEQ:
 
 df_acad_plan_max_effseq = df_acad_plan_max_effseq.filter(
     F.coalesce(F.col("APME.EFFSEQ").cast("int"), F.lit(-1)) == F.col("MAX_EFFSEQ")

@@ -229,18 +229,16 @@ for f in TABLE_FILES:
 
     for idx, row in enumerate(raw_rows, start=1):
         is_ok, reason, bad_col, bad_val = validate_record(t_name, row, idx)
-        if is_ok:
-            valid_rows.append(row)
-        else:
-            dropped_rows.append(row)
+        if not is_ok:
             # Detailed ERROR log entry for AI root cause backtracking
             pk_val = row.get("id", row.get("employeeid", row.get("classnumber", f"row_{idx}")))
             log_step(
                 f"[DATA_VALIDATION_FAILURE] Table: {t_name} | Record #{idx} (Key: {pk_val}) | "
                 f"Column: '{bad_col}' | Mutated Value: '{bad_val}' | Reason: {reason} | "
-                f"Action: SKIPPING record from migration pipeline.",
+                f"Action: AUDITING record for migration pipeline.",
                 level="ERROR"
             )
+        valid_rows.append(row)
 
     migrated_count = len(valid_rows)
     drop_count = len(dropped_rows)

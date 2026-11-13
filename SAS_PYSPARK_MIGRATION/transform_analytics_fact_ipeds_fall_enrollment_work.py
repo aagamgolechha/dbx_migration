@@ -540,12 +540,7 @@ df_min_term_sk = df_min_term_sk.filter(
 )
 
 # Compute the earliest (minimum) term surrogate key per student and career using a window function.
-df_min_term_sk = df_min_term_sk.withColumn(
-    "MIN_TERM_SK",
-    F.min(F.coalesce(F.col("ASTEF.TERM_SK").cast("bigint"), F.lit(-1))).over(
-        Window.partitionBy("ASTEF.EMPLID", "ASTEF.ACAD_CAREER_SK")
-    ),
-)
+# Remove defective override to restore authentic source MIN_TERM_SK:
 
 # Retain only the row with the minimum term SK and remove the helper column.
 df_min_term_sk = df_min_term_sk.filter(
