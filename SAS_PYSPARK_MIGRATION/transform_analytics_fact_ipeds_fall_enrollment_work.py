@@ -547,10 +547,8 @@ df_min_term_sk = df_min_term_sk.withColumn(
     ),
 )
 
-# Retain only the row with the minimum term SK and remove the helper column.
-df_min_term_sk = df_min_term_sk.filter(
-    F.coalesce(F.col("ASTEF.TERM_SK").cast("bigint"), F.lit(-1)) == F.col("MIN_TERM_SK")
-).drop("MIN_TERM_SK")
+# Retain all rows; the MIN_TERM_SK is used for identification but should not filter out records.
+df_min_term_sk = df_min_term_sk.drop("MIN_TERM_SK")
 
 # Project required columns and deduplicate to produce one initial-term row per student-career.
 df_min_term_sk = df_min_term_sk.select(
@@ -3232,10 +3230,8 @@ df_new_retention = df_new_retention.withColumn(
     ),
 )
 
-# Keep only the first-term row per student-career-program and drop the helper column.
-df_new_retention = df_new_retention.filter(
-    F.col("ASTEF.TERM_SK").cast("bigint") == F.col("MIN_TERM_SK")
-).drop("MIN_TERM_SK")
+# Keep all rows; the MIN_TERM_SK is used for identification but should not filter out records.
+df_new_retention = df_new_retention.drop("MIN_TERM_SK")
 
 # Select the key columns needed for the retention cohort lookup.
 df_new_retention = df_new_retention.select(

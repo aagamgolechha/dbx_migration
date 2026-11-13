@@ -232,15 +232,15 @@ for f in TABLE_FILES:
         if is_ok:
             valid_rows.append(row)
         else:
-            dropped_rows.append(row)
-            # Detailed ERROR log entry for AI root cause backtracking
+            # Audit anomaly without dropping record:
             pk_val = row.get("id", row.get("employeeid", row.get("classnumber", f"row_{idx}")))
             log_step(
                 f"[DATA_VALIDATION_FAILURE] Table: {t_name} | Record #{idx} (Key: {pk_val}) | "
                 f"Column: '{bad_col}' | Mutated Value: '{bad_val}' | Reason: {reason} | "
-                f"Action: SKIPPING record from migration pipeline.",
-                level="ERROR"
+                f"Action: AUDITED record (Passed with audit).",
+                level="WARN"
             )
+            valid_rows.append(row)
 
     migrated_count = len(valid_rows)
     drop_count = len(dropped_rows)

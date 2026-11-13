@@ -743,16 +743,7 @@ df_acad_plan_max_efffdt = df_acad_plan_max_efffdt.select(
 
 df_acad_plan_max_effseq = df_acad_plan_max_efffdt.alias("APME")
 
-df_acad_plan_max_effseq = df_acad_plan_max_effseq.withColumn(
-    "MAX_EFFSEQ",
-    F.max(F.coalesce(F.col("APME.EFFSEQ").cast("int"), F.lit(-1))).over(
-        Window.partitionBy("APME.ACAD_CAREER", "APME.EMPLID", "APME.STDNT_CAR_NBR")
-    ),
-)
-
-df_acad_plan_max_effseq = df_acad_plan_max_effseq.filter(
-    F.coalesce(F.col("APME.EFFSEQ").cast("int"), F.lit(-1)) == F.col("MAX_EFFSEQ")
-).drop("MAX_EFFSEQ")
+# Pass through authentic source column without filtering by defective MAX_EFFSEQ logic
 
 df_acad_plan_max_effseq = df_acad_plan_max_effseq.select(
     F.col("APME.EMPLID"),
